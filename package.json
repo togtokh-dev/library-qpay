@@ -1,5 +1,5 @@
 {
-  "name": "qpay.mn",
+  "name": "@togtokh.dev/qpay",
   "version": "0.0.1",
   "description": "qpay api",
   "main": "dist/index.js",
@@ -41,5 +41,8 @@
     "@typescript-eslint/eslint-plugin": "^6.4.0",
     "@typescript-eslint/parser": "^6.4.0",
     "eslint": "^8.47.0"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
