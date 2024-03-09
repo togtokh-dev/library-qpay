@@ -1,12 +1,13 @@
 {
   "name": "@togtokh.dev/qpay",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "qpay api",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "files": [
     "dist/",
-    "types/"
+    "types/",
+    "assets/"
   ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",

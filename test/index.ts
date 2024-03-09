@@ -1,5 +1,5 @@
 import QPAY from "../src/index";
-
+import { payment, invoice } from "../src/index";
 QPAY.auth
   .TOKEN({
     username: "TOGTOKH_DEV",
