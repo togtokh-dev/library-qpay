@@ -24,6 +24,42 @@
 
 ```
 
+## BANK CODE
+
+|  №  | bank code |                English                 |         Монгол         |
+| :-: | :-------: | :------------------------------------: | :--------------------: |
+|  1  |  010000   |            Bank of Mongolia            |      Монгол банк       |
+|  2  |  020000   |              Capital bank              |      Капитал банк      |
+|  3  |  040000   | Trade and Development bank of Mongolia | Худалдаа хөгжлийн банк |
+|  4  |  050000   |               Khan bank                |       Хаан банк        |
+|  5  |  150000   |              Golomt bank               |      Голомт банк       |
+|  6  |  190000   |               Trans bank               |  Тээвэр хөгжлийн банк  |
+|  7  |  210000   |               Arig bank                |       Ариг банк        |
+|  8  |  220000   |              Credit bank               |      Кредит банк       |
+|  9  |  290000   |                NIB bank                |        ҮХО банк        |
+| 10  |  300000   |             Capitron bank              |     Капитрон банк      |
+| 11  |  320000   |                Xac bank                |        Хас банк        |
+| 12  |  330000   |            Chingiskhan bank            |    Чингисхаан банк     |
+| 13  |  340000   |               State bank               |      Төрийн банк       |
+| 14  |  360000   |       National Development bank        |     Хөгжлийн банк      |
+| 15  |  380000   |               Bogd bank                |       Богд банк        |
+| 16  |  900000   |               State fund               |       Төрийн сан       |
+| 17  |  990000   |              Mobi Finance              |       Мобифинанс       |
+| 18  |  991000   |                 M bank                 |         М банк         |
+| 20  |  993000   |               Invescore                |     Инвэскор ББСБ      |
+| 21  |  100000   |               Test bank                |       Тест банк        |
+
+## CURRENCY CODE
+
+|  №  | currency_code |     Валют     |
+| :-: | :-----------: | :-----------: |
+|  1  |      MNT      |    Төгрөг     |
+|  2  |      USD      | Америк доллар |
+|  3  |      CNY      |     Юань      |
+|  4  |      JPY      |      Иен      |
+|  5  |      RUB      |     Рубль     |
+|  6  |      EUR      |     Евро      |
+
 ## STATUS MESSAGE
 
 | STATUS CODE |    Description     |                    Тайлбар                    |

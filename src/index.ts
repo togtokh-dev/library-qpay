@@ -1,5 +1,6 @@
 import auth from "./auth";
-
+import invoice from "./invoice";
+import payment from "./payment";
 const host = "https://merchant.qpay.mn"; //https://merchant-sandbox.qpay.mn
 let invoice_code = "";
 let authInfo: authInfoT = {
@@ -12,4 +13,6 @@ let authInfo: authInfoT = {
   "not-before-policy": "",
   session_state: "",
 };
-export default { invoice_code, host, authInfo, auth };
+export default { invoice_code, host, authInfo, auth, invoice, payment };
+export { default as invoice } from "./invoice";
+export { default as payment } from "./payment";
