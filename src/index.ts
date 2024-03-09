@@ -1,6 +1,6 @@
 import auth from "./auth";
 
-const host = "https://merchant.qpay.mn";
+const host = "https://merchant.qpay.mn"; //https://merchant-sandbox.qpay.mn
 let invoice_code = "";
 let authInfo: authInfoT = {
   token_type: "",
