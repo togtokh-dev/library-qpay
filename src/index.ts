@@ -1,6 +1,17 @@
 import auth from "./auth";
 import invoice from "./invoice";
 import payment from "./payment";
+type authInfoT = {
+  token_type: string;
+  refresh_expires_in: number;
+  refresh_token: string;
+  access_token: string;
+  expires_in: number;
+  scope: string;
+  "not-before-policy": string;
+  session_state: string;
+};
+
 const host = "https://merchant.qpay.mn"; //https://merchant-sandbox.qpay.mn
 let invoice_code = "";
 let authInfo: authInfoT = {
