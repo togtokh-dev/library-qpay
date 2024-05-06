@@ -149,6 +149,29 @@ declare const _default: {
                 }[];
                 transactions: [];
                 inputs: [];
+                payments?: {
+                    payment_id: string;
+                    payment_status: string;
+                    payment_amount: string;
+                    trx_fee: string;
+                    payment_currency: string;
+                    payment_wallet: string;
+                    payment_type: string;
+                    next_payment_date: string;
+                    next_payment_datetime: string;
+                    card_transactions: [];
+                    p2p_transactions: {
+                        id: string;
+                        transaction_bank_code: string;
+                        account_bank_code: string;
+                        account_bank_name: string;
+                        account_number: string;
+                        status: string;
+                        amount: string;
+                        currency: string;
+                        settlement_status: string;
+                    }[];
+                }[];
             };
         }>;
         CANCEL: (invoice_id: string) => Promise<{
@@ -194,7 +217,7 @@ declare const _default: {
             data?: {
                 count: number;
                 paid_amount: number;
-                rows: [{
+                rows: {
                     payment_id: string;
                     payment_status: string;
                     payment_amount: string;
@@ -216,7 +239,7 @@ declare const _default: {
                         currency: string;
                         settlement_status: string;
                     }[];
-                }];
+                }[];
             };
         }>;
         CANCEL: (invoice_id: string) => Promise<{
@@ -225,7 +248,7 @@ declare const _default: {
             data?: {
                 count: number;
                 paid_amount: number;
-                rows: [{
+                rows: {
                     payment_id: string;
                     payment_status: string;
                     payment_amount: string;
@@ -247,7 +270,7 @@ declare const _default: {
                         currency: string;
                         settlement_status: string;
                     }[];
-                }];
+                }[];
             };
         }>;
         REFUND: (invoice_id: string) => Promise<{
@@ -256,7 +279,7 @@ declare const _default: {
             data?: {
                 count: number;
                 paid_amount: number;
-                rows: [{
+                rows: {
                     payment_id: string;
                     payment_status: string;
                     payment_amount: string;
@@ -278,7 +301,52 @@ declare const _default: {
                         currency: string;
                         settlement_status: string;
                     }[];
-                }];
+                }[];
+            };
+        }>;
+    };
+    ebarimt: {
+        CREATE: (body: {
+            payment_id: string;
+            ebarimt_receiver_type: "CITIZEN" | "COMPAYNE";
+            ebarimt_receiver?: string;
+        }) => Promise<{
+            success: boolean;
+            message: string;
+            data?: {
+                id: string;
+                ebarimt_by: "QPAY";
+                g_wallet_id: string;
+                g_wallet_customer_id: string;
+                ebarimt_receiver_type: string;
+                ebarimt_receiver: string;
+                ebarimt_district_code: string;
+                ebarimt_bill_type: string;
+                g_merchant_id: string;
+                merchant_branch_code: string;
+                merchant_terminal_code: string;
+                merchant_staff_code: string;
+                merchant_register_no: string;
+                g_payment_id: string;
+                paid_by: string;
+                object_type: string;
+                object_id: string;
+                amount: string;
+                vat_amount: string;
+                city_tax_amount: string;
+                ebarimt_qr_data: string;
+                ebarimt_lottery: string;
+                note: string;
+                barimt_status: string;
+                barimt_status_date: string;
+                ebarimt_sent_email: string;
+                ebarimt_receiver_phone: string;
+                tax_type: string;
+                created_by: string;
+                created_date: string;
+                updated_by: string;
+                updated_date: string;
+                status: boolean;
             };
         }>;
     };
@@ -286,3 +354,4 @@ declare const _default: {
 export default _default;
 export { default as invoice } from "./invoice";
 export { default as payment } from "./payment";
+export { default as ebarimt } from "./ebarimt";

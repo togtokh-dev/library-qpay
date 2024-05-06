@@ -1,9 +1,10 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.payment = exports.invoice = void 0;
+exports.ebarimt = exports.payment = exports.invoice = void 0;
 const auth_1 = require("./auth");
 const invoice_1 = require("./invoice");
 const payment_1 = require("./payment");
+const ebarimt_1 = require("./ebarimt");
 const host = "https://merchant.qpay.mn"; //https://merchant-sandbox.qpay.mn
 let invoice_code = "";
 let authInfo = {
@@ -16,8 +17,18 @@ let authInfo = {
     "not-before-policy": "",
     session_state: "",
 };
-exports.default = { invoice_code, host, authInfo, auth: auth_1.default, invoice: invoice_1.default, payment: payment_1.default };
+exports.default = {
+    invoice_code,
+    host,
+    authInfo,
+    auth: auth_1.default,
+    invoice: invoice_1.default,
+    payment: payment_1.default,
+    ebarimt: ebarimt_1.default,
+};
 var invoice_2 = require("./invoice");
 Object.defineProperty(exports, "invoice", { enumerable: true, get: function () { return invoice_2.default; } });
 var payment_2 = require("./payment");
 Object.defineProperty(exports, "payment", { enumerable: true, get: function () { return payment_2.default; } });
+var ebarimt_2 = require("./ebarimt");
+Object.defineProperty(exports, "ebarimt", { enumerable: true, get: function () { return ebarimt_2.default; } });

@@ -1,6 +1,7 @@
 import auth from "./auth";
 import invoice from "./invoice";
 import payment from "./payment";
+import ebarimt from "./ebarimt";
 type authInfoT = {
   token_type: string;
   refresh_expires_in: number;
@@ -24,6 +25,15 @@ let authInfo: authInfoT = {
   "not-before-policy": "",
   session_state: "",
 };
-export default { invoice_code, host, authInfo, auth, invoice, payment };
+export default {
+  invoice_code,
+  host,
+  authInfo,
+  auth,
+  invoice,
+  payment,
+  ebarimt,
+};
 export { default as invoice } from "./invoice";
 export { default as payment } from "./payment";
+export { default as ebarimt } from "./ebarimt";
