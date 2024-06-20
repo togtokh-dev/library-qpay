@@ -13,22 +13,33 @@ type authInfoT = {
   session_state: string;
 };
 
-const host = "https://merchant.qpay.mn"; //https://merchant-sandbox.qpay.mn
-let invoice_code = "";
-let authInfo: authInfoT = {
-  token_type: "",
-  refresh_expires_in: 1,
-  refresh_token: "",
-  access_token: "",
-  expires_in: 1,
-  scope: "",
-  "not-before-policy": "",
-  session_state: "",
+export const config: {
+  invoice_code: string;
+  host: string;
+  authInfo: authInfoT;
+  auth: {
+    username: string;
+    password: string;
+  };
+} = {
+  invoice_code: "",
+  host: "https://merchant.qpay.mn",
+  authInfo: {
+    token_type: "",
+    refresh_expires_in: 1,
+    refresh_token: "",
+    access_token: "",
+    expires_in: 1,
+    scope: "",
+    "not-before-policy": "",
+    session_state: "",
+  },
+  auth: {
+    username: "", // username
+    password: "", // password
+  },
 };
 export default {
-  invoice_code,
-  host,
-  authInfo,
   auth,
   invoice,
   payment,

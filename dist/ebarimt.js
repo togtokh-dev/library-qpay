@@ -1,24 +1,36 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const axios_1 = require("axios");
 const _1 = require(".");
+const auth_1 = require("./auth");
+const axios_master_1 = require("axios-master");
 const CREATE = async (body) => {
     var _a, _b, _c;
     try {
-        const res = await axios_1.default.post(`${_1.default.host}/v2/ebarimt/create`, body, {
+        const res = await (0, axios_master_1.axiosMasterMain)({
+            method: "POST",
+            url: `${_1.config.host}/v2/ebarimt/create`,
+            data: body,
             headers: {
-                Authorization: `Bearer ${_1.default.authInfo.access_token}`,
+                Authorization: `Bearer ${_1.config.authInfo.access_token}`,
+                "Content-Type": "application/json",
             },
+        }, {
+            shouldRetry: true,
+            shouldRetryStatus: [400, 401],
+            retryFunction: auth_1.getToken, // Function to refresh the token
+            name: "CREATE Ebarimt",
+            timeout: 20000,
+            logger(data) { },
         });
-        if (res.data.status) {
+        if (res.status) {
             return {
                 success: true,
                 message: "success",
-                data: res.data,
+                data: res,
             };
         }
         else {
-            console.log("FAILED", res.data);
+            console.log("FAILED", res);
             return {
                 success: false,
                 message: "",

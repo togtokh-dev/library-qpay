@@ -1,5 +1,7 @@
-import axios from "axios";
-import QPAY from ".";
+import QPAY, { config } from ".";
+import { getToken } from "./auth";
+import { axiosMasterMain } from "axios-master";
+
 type PaymentInfoResT = {
   payment_id: string;
   payment_status: string; //"PAID";
@@ -26,6 +28,7 @@ type PaymentInfoResT = {
     settlement_status: string;
   }[];
 };
+
 type PaymentCheckResT = {
   count: number;
   paid_amount: number;
@@ -62,19 +65,33 @@ const INFO = async (
   data?: PaymentInfoResT;
 }> => {
   try {
-    const res = await axios.get(`${QPAY.host}/v2/payment/${payment_id}`, {
-      headers: {
-        Authorization: `Bearer ${QPAY.authInfo.access_token}`,
+    const res = await axiosMasterMain(
+      {
+        method: "GET",
+        url: `${config.host}/v2/payment/${payment_id}`,
+        headers: {
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
-    if (res.data.payment_id) {
+      {
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "INFO Payment",
+        timeout: 20000,
+        logger(data) {},
+      }
+    );
+
+    if (res.payment_id) {
       return {
         success: true,
         message: "success",
-        data: res.data,
+        data: res,
       };
     } else {
-      console.log("FAILED", res.data);
+      console.log("FAILED", res);
       return {
         success: false,
         message: "",
@@ -88,6 +105,7 @@ const INFO = async (
     };
   }
 };
+
 const CHECK = async (
   invoice_id: string
 ): Promise<{
@@ -96,42 +114,53 @@ const CHECK = async (
   data?: PaymentCheckResT;
 }> => {
   try {
-    const res = await axios.post(
-      `${QPAY.host}/v2/payment/check`,
+    const res = await axiosMasterMain(
       {
-        object_type: "INVOICE",
-        object_id: invoice_id,
-        offset: {
-          page_number: 1,
-          page_limit: 100,
+        method: "POST",
+        url: `${config.host}/v2/payment/check`,
+        data: {
+          object_type: "INVOICE",
+          object_id: invoice_id,
+          offset: {
+            page_number: 1,
+            page_limit: 100,
+          },
+        },
+        headers: {
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
         },
       },
       {
-        headers: {
-          Authorization: `Bearer ${QPAY.authInfo.access_token}`,
-        },
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "CHECK Payment",
+        timeout: 20000,
+        logger(data) {},
       }
     );
-    const result: PaymentCheckResT = res.data;
+
+    const result: PaymentCheckResT = res;
     if (result.rows) {
       if (result.count > 0) {
         return {
           success: true,
           message: "Төлөгдсөн",
-          data: res.data,
+          data: res,
         };
       } else {
         return {
           success: false,
           message: "Төлбөр хүлээгдэж байна",
-          data: res.data,
+          data: res,
         };
       }
     } else {
       return {
         success: false,
         message: "Төлбөр хүлээгдэж байна",
-        data: res.data,
+        data: res,
       };
     }
   } catch (error) {
@@ -142,6 +171,7 @@ const CHECK = async (
     };
   }
 };
+
 const CANCEL = async (
   invoice_id: string
 ): Promise<{
@@ -150,25 +180,36 @@ const CANCEL = async (
   data?: PaymentCheckResT;
 }> => {
   try {
-    const res = await axios.delete(
-      `${QPAY.host}/v2/payment/cancel/${invoice_id}`,
+    const res = await axiosMasterMain(
       {
+        method: "DELETE",
+        url: `${config.host}/v2/payment/cancel/${invoice_id}`,
         headers: {
-          Authorization: `Bearer ${QPAY.authInfo.access_token}`,
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
         },
+      },
+      {
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "CANCEL Payment",
+        timeout: 20000,
+        logger(data) {},
       }
     );
-    if (res.data) {
+
+    if (res) {
       return {
         success: true,
         message: "success",
-        data: res.data,
+        data: res,
       };
     } else {
       return {
         success: false,
         message: "",
-        data: res.data,
+        data: res,
       };
     }
   } catch (error) {
@@ -179,6 +220,7 @@ const CANCEL = async (
     };
   }
 };
+
 const REFUND = async (
   invoice_id: string
 ): Promise<{
@@ -187,25 +229,36 @@ const REFUND = async (
   data?: PaymentCheckResT;
 }> => {
   try {
-    const res = await axios.delete(
-      `${QPAY.host}/v2/payment/refund/${invoice_id}`,
+    const res = await axiosMasterMain(
       {
+        method: "DELETE",
+        url: `${config.host}/v2/payment/refund/${invoice_id}`,
         headers: {
-          Authorization: `Bearer ${QPAY.authInfo.access_token}`,
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
         },
+      },
+      {
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "REFUND Payment",
+        timeout: 20000,
+        logger(data) {},
       }
     );
-    if (res.data) {
+
+    if (res) {
       return {
         success: true,
         message: "success",
-        data: res.data,
+        data: res,
       };
     } else {
       return {
         success: false,
         message: "",
-        data: res.data,
+        data: res,
       };
     }
   } catch (error) {
@@ -216,4 +269,5 @@ const REFUND = async (
     };
   }
 };
+
 export default { INFO, CHECK, CANCEL, REFUND };

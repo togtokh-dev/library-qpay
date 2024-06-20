@@ -8,10 +8,16 @@ type authInfoT = {
     "not-before-policy": string;
     session_state: string;
 };
-declare const _default: {
+export declare const config: {
     invoice_code: string;
     host: string;
     authInfo: authInfoT;
+    auth: {
+        username: string;
+        password: string;
+    };
+};
+declare const _default: {
     auth: {
         TOKEN: (body: {
             username: string;

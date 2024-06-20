@@ -1,3 +1,4 @@
+export declare const getToken: () => Promise<string>;
 declare const _default: {
     TOKEN: (body: {
         username: string;

@@ -1,26 +1,29 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ebarimt = exports.payment = exports.invoice = void 0;
+exports.ebarimt = exports.payment = exports.invoice = exports.config = void 0;
 const auth_1 = require("./auth");
 const invoice_1 = require("./invoice");
 const payment_1 = require("./payment");
 const ebarimt_1 = require("./ebarimt");
-const host = "https://merchant.qpay.mn"; //https://merchant-sandbox.qpay.mn
-let invoice_code = "";
-let authInfo = {
-    token_type: "",
-    refresh_expires_in: 1,
-    refresh_token: "",
-    access_token: "",
-    expires_in: 1,
-    scope: "",
-    "not-before-policy": "",
-    session_state: "",
+exports.config = {
+    invoice_code: "",
+    host: "https://merchant.qpay.mn",
+    authInfo: {
+        token_type: "",
+        refresh_expires_in: 1,
+        refresh_token: "",
+        access_token: "",
+        expires_in: 1,
+        scope: "",
+        "not-before-policy": "",
+        session_state: "",
+    },
+    auth: {
+        username: "", // username
+        password: "", // password
+    },
 };
 exports.default = {
-    invoice_code,
-    host,
-    authInfo,
     auth: auth_1.default,
     invoice: invoice_1.default,
     payment: payment_1.default,

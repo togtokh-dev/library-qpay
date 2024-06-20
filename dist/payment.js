@@ -1,24 +1,35 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const axios_1 = require("axios");
 const _1 = require(".");
+const auth_1 = require("./auth");
+const axios_master_1 = require("axios-master");
 const INFO = async (payment_id) => {
     var _a, _b, _c;
     try {
-        const res = await axios_1.default.get(`${_1.default.host}/v2/payment/${payment_id}`, {
+        const res = await (0, axios_master_1.axiosMasterMain)({
+            method: "GET",
+            url: `${_1.config.host}/v2/payment/${payment_id}`,
             headers: {
-                Authorization: `Bearer ${_1.default.authInfo.access_token}`,
+                Authorization: `Bearer ${_1.config.authInfo.access_token}`,
+                "Content-Type": "application/json",
             },
+        }, {
+            shouldRetry: true,
+            shouldRetryStatus: [400, 401],
+            retryFunction: auth_1.getToken, // Function to refresh the token
+            name: "INFO Payment",
+            timeout: 20000,
+            logger(data) { },
         });
-        if (res.data.payment_id) {
+        if (res.payment_id) {
             return {
                 success: true,
                 message: "success",
-                data: res.data,
+                data: res,
             };
         }
         else {
-            console.log("FAILED", res.data);
+            console.log("FAILED", res);
             return {
                 success: false,
                 message: "",
@@ -36,32 +47,43 @@ const INFO = async (payment_id) => {
 const CHECK = async (invoice_id) => {
     var _a, _b, _c;
     try {
-        const res = await axios_1.default.post(`${_1.default.host}/v2/payment/check`, {
-            object_type: "INVOICE",
-            object_id: invoice_id,
-            offset: {
-                page_number: 1,
-                page_limit: 100,
+        const res = await (0, axios_master_1.axiosMasterMain)({
+            method: "POST",
+            url: `${_1.config.host}/v2/payment/check`,
+            data: {
+                object_type: "INVOICE",
+                object_id: invoice_id,
+                offset: {
+                    page_number: 1,
+                    page_limit: 100,
+                },
+            },
+            headers: {
+                Authorization: `Bearer ${_1.config.authInfo.access_token}`,
+                "Content-Type": "application/json",
             },
         }, {
-            headers: {
-                Authorization: `Bearer ${_1.default.authInfo.access_token}`,
-            },
+            shouldRetry: true,
+            shouldRetryStatus: [400, 401],
+            retryFunction: auth_1.getToken, // Function to refresh the token
+            name: "CHECK Payment",
+            timeout: 20000,
+            logger(data) { },
         });
-        const result = res.data;
+        const result = res;
         if (result.rows) {
             if (result.count > 0) {
                 return {
                     success: true,
                     message: "Төлөгдсөн",
-                    data: res.data,
+                    data: res,
                 };
             }
             else {
                 return {
                     success: false,
                     message: "Төлбөр хүлээгдэж байна",
-                    data: res.data,
+                    data: res,
                 };
             }
         }
@@ -69,7 +91,7 @@ const CHECK = async (invoice_id) => {
             return {
                 success: false,
                 message: "Төлбөр хүлээгдэж байна",
-                data: res.data,
+                data: res,
             };
         }
     }
@@ -84,23 +106,33 @@ const CHECK = async (invoice_id) => {
 const CANCEL = async (invoice_id) => {
     var _a, _b, _c;
     try {
-        const res = await axios_1.default.delete(`${_1.default.host}/v2/payment/cancel/${invoice_id}`, {
+        const res = await (0, axios_master_1.axiosMasterMain)({
+            method: "DELETE",
+            url: `${_1.config.host}/v2/payment/cancel/${invoice_id}`,
             headers: {
-                Authorization: `Bearer ${_1.default.authInfo.access_token}`,
+                Authorization: `Bearer ${_1.config.authInfo.access_token}`,
+                "Content-Type": "application/json",
             },
+        }, {
+            shouldRetry: true,
+            shouldRetryStatus: [400, 401],
+            retryFunction: auth_1.getToken, // Function to refresh the token
+            name: "CANCEL Payment",
+            timeout: 20000,
+            logger(data) { },
         });
-        if (res.data) {
+        if (res) {
             return {
                 success: true,
                 message: "success",
-                data: res.data,
+                data: res,
             };
         }
         else {
             return {
                 success: false,
                 message: "",
-                data: res.data,
+                data: res,
             };
         }
     }
@@ -115,23 +147,33 @@ const CANCEL = async (invoice_id) => {
 const REFUND = async (invoice_id) => {
     var _a, _b, _c;
     try {
-        const res = await axios_1.default.delete(`${_1.default.host}/v2/payment/refund/${invoice_id}`, {
+        const res = await (0, axios_master_1.axiosMasterMain)({
+            method: "DELETE",
+            url: `${_1.config.host}/v2/payment/refund/${invoice_id}`,
             headers: {
-                Authorization: `Bearer ${_1.default.authInfo.access_token}`,
+                Authorization: `Bearer ${_1.config.authInfo.access_token}`,
+                "Content-Type": "application/json",
             },
+        }, {
+            shouldRetry: true,
+            shouldRetryStatus: [400, 401],
+            retryFunction: auth_1.getToken, // Function to refresh the token
+            name: "REFUND Payment",
+            timeout: 20000,
+            logger(data) { },
         });
-        if (res.data) {
+        if (res) {
             return {
                 success: true,
                 message: "success",
-                data: res.data,
+                data: res,
             };
         }
         else {
             return {
                 success: false,
                 message: "",
-                data: res.data,
+                data: res,
             };
         }
     }

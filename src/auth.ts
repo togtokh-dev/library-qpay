@@ -1,5 +1,5 @@
 import axios from "axios";
-import QPAY from "./";
+import QPAY, { config } from "./";
 type AuthResT = {
   token_type: string;
   refresh_expires_in: number;
@@ -21,9 +21,9 @@ const TOKEN = async (body: {
   message: string;
 }> => {
   try {
-    QPAY.invoice_code = body.invoice_code;
+    config.invoice_code = body.invoice_code;
     const res = await axios.post(
-      `${QPAY.host}/v2/auth/token`,
+      `${config.host}/v2/auth/token`,
       {},
       {
         headers: {
@@ -35,8 +35,10 @@ const TOKEN = async (body: {
     );
     const tokenRes: AuthResT = res.data;
     if (tokenRes.access_token) {
+      config.auth.username = body.username;
+      config.auth.password = body.password;
       console.log("SUCCESS");
-      QPAY.authInfo = tokenRes;
+      config.authInfo = tokenRes;
       return {
         success: true,
         message: "success",
@@ -62,18 +64,18 @@ const REFRESH = async (): Promise<{
 }> => {
   try {
     const res = await axios.post(
-      `${QPAY.host}/v2/auth/refresh`,
+      `${config.host}/v2/auth/refresh`,
       {},
       {
         headers: {
-          Authorization: `Bearer ${QPAY.authInfo.refresh_token}`,
+          Authorization: `Bearer ${config.authInfo.refresh_token}`,
         },
       }
     );
     const tokenRes: AuthResT = res.data;
     if (tokenRes.access_token) {
       console.log("SUCCESS");
-      QPAY.authInfo = tokenRes;
+      config.authInfo = tokenRes;
       return {
         success: true,
         message: "success",
@@ -91,6 +93,32 @@ const REFRESH = async (): Promise<{
       success: false,
       message: error?.response?.data?.message || "error",
     };
+  }
+};
+export const getToken = async (): Promise<string> => {
+  try {
+    const res = await axios.post(
+      `${config.host}/v2/auth/token`,
+      {},
+      {
+        headers: {
+          Authorization: `Basic ${Buffer.from(
+            config.auth.username + ":" + config.auth.password
+          ).toString("base64")}`,
+        },
+      }
+    );
+    const tokenRes: AuthResT = res.data;
+    if (tokenRes.access_token) {
+      config.authInfo = tokenRes;
+      return tokenRes.access_token;
+    } else {
+      console.log("FAILED", tokenRes);
+      return "";
+    }
+  } catch (error) {
+    console.log("FAILED", error?.response?.data);
+    return "";
   }
 };
 export default { TOKEN, REFRESH };

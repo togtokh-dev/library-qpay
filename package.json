@@ -1,6 +1,6 @@
 {
   "name": "@togtokh.dev/qpay",
-  "version": "0.0.6",
+  "version": "0.0.7",
   "description": "qpay api",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -31,6 +31,7 @@
   "homepage": "https://gitlab.com/togtokh-dev/library/payment/qpay/#readme",
   "dependencies": {
     "axios": "^1.6.2",
+    "axios-master": "^1.1.4",
     "https": "^1.0.0",
     "ts-node": "^10.9.2",
     "typescript": "^5.0.4"

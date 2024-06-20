@@ -1,5 +1,7 @@
-import axios from "axios";
-import QPAY from ".";
+import QPAY, { config } from ".";
+import { getToken } from "./auth";
+import { axiosMasterMain } from "axios-master";
+
 type invoiceIn1T = {
   invoice_code?: string;
   sender_invoice_no: string;
@@ -127,6 +129,7 @@ type infoResT = {
     }[];
   }[];
 };
+
 const CREATE = async (
   body: invoiceIn1T
 ): Promise<{
@@ -135,23 +138,34 @@ const CREATE = async (
   data?: ResultT;
 }> => {
   try {
-    const res = await axios.post(
-      `${QPAY.host}/v2/invoice`,
-      { invoice_code: QPAY.invoice_code, ...body },
+    const res = await axiosMasterMain(
       {
+        method: "POST",
+        url: `${config.host}/v2/invoice`,
+        data: { invoice_code: config.invoice_code, ...body },
         headers: {
-          Authorization: `Bearer ${QPAY.authInfo.access_token}`,
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
         },
+      },
+      {
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "CREATE Invoice",
+        timeout: 20000,
+        logger(data) {},
       }
     );
-    if (res.data.invoice_id) {
+
+    if (res.invoice_id) {
       return {
         success: true,
         message: "success",
-        data: res.data,
+        data: res,
       };
     } else {
-      console.log("FAILED", res.data);
+      console.log("FAILED", res);
       return {
         success: false,
         message: "",
@@ -165,6 +179,7 @@ const CREATE = async (
     };
   }
 };
+
 const CREATE_SIMPLE = async (
   body: invoiceIn2T
 ): Promise<{
@@ -173,23 +188,35 @@ const CREATE_SIMPLE = async (
   data?: ResultT;
 }> => {
   try {
-    const res = await axios.post(
-      `${QPAY.host}/v2/invoice`,
-      { invoice_code: QPAY.invoice_code, ...body },
+    const res = await axiosMasterMain(
       {
+        method: "POST",
+        url: `${config.host}/v2/invoice`,
+        data: { invoice_code: config.invoice_code, ...body },
         headers: {
-          Authorization: `Bearer ${QPAY.authInfo.access_token}`,
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
+        },
+      },
+      {
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "CREATE SIMPLE Invoice",
+        timeout: 20000,
+        logger(data) {
+          //  console.log(data);
         },
       }
     );
-    if (res.data.invoice_id) {
+    if (res.invoice_id) {
       return {
         success: true,
         message: "success",
-        data: res.data,
+        data: res,
       };
     } else {
-      console.log("FAILED", res.data);
+      console.log("FAILED", res);
       return {
         success: false,
         message: "",
@@ -203,6 +230,7 @@ const CREATE_SIMPLE = async (
     };
   }
 };
+
 const INFO = async (
   invoice_id: string
 ): Promise<{
@@ -211,19 +239,33 @@ const INFO = async (
   data?: infoResT;
 }> => {
   try {
-    const res = await axios.get(`${QPAY.host}/v2/invoice/${invoice_id}`, {
-      headers: {
-        Authorization: `Bearer ${QPAY.authInfo.access_token}`,
+    const res = await axiosMasterMain(
+      {
+        method: "GET",
+        url: `${config.host}/v2/invoice/${invoice_id}`,
+        headers: {
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
-    if (res.data.invoice_id) {
+      {
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "INFO Invoice",
+        timeout: 20000,
+        logger(data) {},
+      }
+    );
+
+    if (res.invoice_id) {
       return {
         success: true,
         message: "success",
-        data: res.data,
+        data: res,
       };
     } else {
-      console.log("FAILED", res.data);
+      console.log("FAILED", res);
       return {
         success: false,
         message: "",
@@ -237,6 +279,7 @@ const INFO = async (
     };
   }
 };
+
 const CANCEL = async (
   invoice_id: string
 ): Promise<{
@@ -245,19 +288,33 @@ const CANCEL = async (
   data?: any;
 }> => {
   try {
-    const res = await axios.delete(`${QPAY.host}/v2/invoice/${invoice_id}`, {
-      headers: {
-        Authorization: `Bearer ${QPAY.authInfo.access_token}`,
+    const res = await axiosMasterMain(
+      {
+        method: "DELETE",
+        url: `${config.host}/v2/invoice/${invoice_id}`,
+        headers: {
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
-    if (res.data) {
+      {
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "CANCEL Invoice",
+        timeout: 20000,
+        logger(data) {},
+      }
+    );
+
+    if (res) {
       return {
         success: true,
         message: "success",
-        data: res.data,
+        data: res,
       };
     } else {
-      console.log("FAILED", res.data);
+      console.log("FAILED", res);
       return {
         success: false,
         message: "",
@@ -271,4 +328,5 @@ const CANCEL = async (
     };
   }
 };
+
 export default { CREATE, CREATE_SIMPLE, INFO, CANCEL };

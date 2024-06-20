@@ -14,11 +14,9 @@ QPAY.auth
     //   amount: 200,
     //   callback_url: "",
     // });
-    // //d58a2b45-25a6-4a42-8061-b3700387405b
-    // console.log(invoice);
-    // const payemnt = await QPAY.payment.CHECK(
-    //   "884aa807-3180-46c5-8d8e-6d3e8bfa4ade"
-    // );
+    // // // //d58a2b45-25a6-4a42-8061-b3700387405b
+    // // console.log(invoice);
+    // const payemnt = await QPAY.payment.CHECK(`${invoice.data?.invoice_id}`);
     // console.log(payemnt.data?.rows);
     //496237254784964
     // const ebarimt = await QPAY.ebarimt.CREATE({

@@ -1,5 +1,6 @@
-import axios from "axios";
-import QPAY from ".";
+import QPAY, { config } from ".";
+import { getToken } from "./auth";
+import { axiosMasterMain } from "axios-master";
 type EbarimtResT = {
   id: string;
   ebarimt_by: "QPAY";
@@ -46,19 +47,34 @@ const CREATE = async (body: {
   data?: EbarimtResT;
 }> => {
   try {
-    const res = await axios.post(`${QPAY.host}/v2/ebarimt/create`, body, {
-      headers: {
-        Authorization: `Bearer ${QPAY.authInfo.access_token}`,
+    const res = await axiosMasterMain(
+      {
+        method: "POST",
+        url: `${config.host}/v2/ebarimt/create`,
+        data: body,
+        headers: {
+          Authorization: `Bearer ${config.authInfo.access_token}`,
+          "Content-Type": "application/json",
+        },
       },
-    });
-    if (res.data.status) {
+      {
+        shouldRetry: true,
+        shouldRetryStatus: [400, 401],
+        retryFunction: getToken, // Function to refresh the token
+        name: "CREATE Ebarimt",
+        timeout: 20000,
+        logger(data) {},
+      }
+    );
+
+    if (res.status) {
       return {
         success: true,
         message: "success",
-        data: res.data,
+        data: res,
       };
     } else {
-      console.log("FAILED", res.data);
+      console.log("FAILED", res);
       return {
         success: false,
         message: "",
