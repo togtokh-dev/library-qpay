@@ -19,6 +19,7 @@ type invoiceIn1T = {
     amount: number;
     callback_url: string;
     sender_staff_code: string;
+    tax_customer_code?: string;
     lines: [
         {
             tax_product_code: string | number;
