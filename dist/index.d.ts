@@ -53,6 +53,7 @@ declare const _default: {
             note: string;
             amount: number;
             callback_url: string;
+            sender_staff_code: string;
             lines: [{
                 tax_product_code: string | number;
                 line_description: string;
