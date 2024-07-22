@@ -22,10 +22,10 @@ type invoiceIn1T = {
   note: null | string;
   lines: [
     {
-      tax_product_code: null;
+      tax_product_code: string | number;
       line_description: string;
       line_quantity: string; //"1.00";
-      line_unit_price: string; //"10000.00";
+      line_unit_price: string | number; //"10000.00";
       note: string;
       discounts: {
         discount_code: string;
