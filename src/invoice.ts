@@ -21,6 +21,7 @@ type invoiceIn1T = {
   maximum_amount: null | string;
   note: null | string;
   amount: number;
+  callback_url: string;
   lines: [
     {
       tax_product_code: string | number;

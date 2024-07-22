@@ -52,6 +52,7 @@ declare const _default: {
             maximum_amount: string;
             note: string;
             amount: number;
+            callback_url: string;
             lines: [{
                 tax_product_code: string | number;
                 line_description: string;
