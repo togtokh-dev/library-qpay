@@ -20,6 +20,7 @@ type invoiceIn1T = {
   allow_exceed: boolean;
   maximum_amount: null | string;
   note: null | string;
+  amount: number;
   lines: [
     {
       tax_product_code: string | number;

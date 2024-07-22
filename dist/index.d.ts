@@ -51,6 +51,7 @@ declare const _default: {
             allow_exceed: boolean;
             maximum_amount: string;
             note: string;
+            amount: number;
             lines: [{
                 tax_product_code: string | number;
                 line_description: string;
