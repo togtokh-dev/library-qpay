@@ -10,7 +10,8 @@ type invoiceIn1T = {
         phone: string | number;
     };
     invoice_description: string;
-    invoice_due_date: null | string;
+    enable_expiry?: boolean;
+    invoice_due_date?: null | string;
     allow_partial: boolean;
     minimum_amount: null | string;
     allow_exceed: boolean;
@@ -20,26 +21,26 @@ type invoiceIn1T = {
     callback_url: string;
     sender_staff_code: string;
     tax_customer_code?: string;
-    lines: [
+    lines?: [
         {
             tax_product_code: string | number;
             line_description: string;
             line_quantity: string;
             line_unit_price: string | number;
             note: string;
-            discounts: {
+            discounts?: {
                 discount_code: string;
                 description: string;
                 amount: number;
                 note: string;
             }[];
-            surcharges: {
+            surcharges?: {
                 surcharge_code: string;
                 description: string;
                 amount: number;
                 note: string;
             }[];
-            taxes: {
+            taxes?: {
                 tax_code: string;
                 description: string;
                 amount: number;
