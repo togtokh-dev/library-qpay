@@ -1,6 +1,6 @@
 # QPAY
 
-![Alt text](https://uploads.togtokh.dev/uploads/test/image/png/65ebcfb20ed6870daf906fb9.png)
+![Alt text](https://developer.qpay.mn/intro.png)
 
 ## Example
 
