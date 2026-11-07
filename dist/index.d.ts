@@ -46,12 +46,12 @@ declare const _default: {
             };
             invoice_description: string;
             enable_expiry?: boolean;
-            invoice_due_date?: string;
+            invoice_due_date?: null | string;
             allow_partial: boolean;
-            minimum_amount: string;
+            minimum_amount: null | string;
             allow_exceed: boolean;
-            maximum_amount: string;
-            note: string;
+            maximum_amount: null | string;
+            note: null | string;
             amount: number;
             callback_url: string;
             sender_staff_code: string;
@@ -127,29 +127,29 @@ declare const _default: {
                 invoice_id: string;
                 invoice_status: string;
                 sender_invoice_no: string;
-                sender_branch_code: string;
-                sender_branch_data: string;
-                sender_staff_code: string;
-                sender_staff_data: string;
-                sender_terminal_code: string;
-                sender_terminal_data: string;
+                sender_branch_code: string | null;
+                sender_branch_data: string | null;
+                sender_staff_code: string | null;
+                sender_staff_data: string | null;
+                sender_terminal_code: string | null;
+                sender_terminal_data: string | null;
                 invoice_description: string;
-                invoice_due_date: string;
+                invoice_due_date: string | null;
                 enable_expiry: false;
                 expiry_date: string;
                 allow_partial: false;
-                minimum_amount: string;
+                minimum_amount: string | null;
                 allow_exceed: false;
-                maximum_amount: string;
+                maximum_amount: string | null;
                 total_amount: string;
                 gross_amount: number;
                 tax_amount: number;
                 surcharge_amount: number;
                 discount_amount: number;
                 callback_url: string;
-                note: string;
+                note: string | null;
                 lines: {
-                    tax_product_code: string;
+                    tax_product_code: string | null;
                     line_description: string;
                     line_quantity: string;
                     line_unit_price: string;
@@ -168,8 +168,8 @@ declare const _default: {
                     payment_currency: string;
                     payment_wallet: string;
                     payment_type: string;
-                    next_payment_date: string;
-                    next_payment_datetime: string;
+                    next_payment_date: null | string;
+                    next_payment_datetime: null | string;
                     card_transactions: [];
                     p2p_transactions: {
                         id: string;
@@ -205,8 +205,8 @@ declare const _default: {
                 payment_wallet: string;
                 object_type: string;
                 object_id: string;
-                next_payment_date: string;
-                next_payment_datetime: string;
+                next_payment_date: null | string;
+                next_payment_datetime: null | string;
                 transaction_type: string;
                 card_transactions: any[];
                 p2p_transactions: {
@@ -236,8 +236,8 @@ declare const _default: {
                     payment_currency: string;
                     payment_wallet: string;
                     payment_type: string;
-                    next_payment_date: string;
-                    next_payment_datetime: string;
+                    next_payment_date: null | string;
+                    next_payment_datetime: null | string;
                     card_transactions: [];
                     p2p_transactions: {
                         id: string;
@@ -267,8 +267,8 @@ declare const _default: {
                     payment_currency: string;
                     payment_wallet: string;
                     payment_type: string;
-                    next_payment_date: string;
-                    next_payment_datetime: string;
+                    next_payment_date: null | string;
+                    next_payment_datetime: null | string;
                     card_transactions: [];
                     p2p_transactions: {
                         id: string;
@@ -298,8 +298,8 @@ declare const _default: {
                     payment_currency: string;
                     payment_wallet: string;
                     payment_type: string;
-                    next_payment_date: string;
-                    next_payment_datetime: string;
+                    next_payment_date: null | string;
+                    next_payment_datetime: null | string;
                     card_transactions: [];
                     p2p_transactions: {
                         id: string;

@@ -1,89 +1,176 @@
-# QPAY
+# QPay
 
-![Alt text](https://developer.qpay.mn/intro.png)
+A QPay payment-gateway client for Node.js and TypeScript — authenticate, manage invoices, check and refund payments, and issue eBarimt receipts.
 
-## Example
-
-```bash
-    import QPAY from "@togtokh.dev/qpay";
-
-    QPAY.auth
-      .TOKEN({
-        username: "TOGTOKH_DEV",
-        password: "fAjEuRCa",
-        invoice_code: "TOGTOKH_DEV_INVOICE",
-      })
-      .then(async (r) => {
-        console.log(QPAY.authInfo);
-        await QPAY.auth.REFRESH();
-        console.log(QPAY.authInfo);
-      })
-      .catch((e) => {
-        console.log(e);
-      });
-
-```
+## Install
 
 ```bash
-
-      const invoice = await QPAY.invoice.CREATE({
-      invoice_code: "TEST_INVOICE",
-      sender_invoice_no: "123455678",
-      invoice_receiver_code: "83",
-      sender_branch_code: "BRANCH1",
-      invoice_description: "Order No1311 200.00",
-      enable_expiry: false,
-      allow_partial: false,
-      minimum_amount: null,
-      allow_exceed: false,
-      maximum_amount: null,
-      amount: 200,
-      callback_url:
-        "https://bd5492c3ee85.ngrok.io/payments?payment_id=12345678",
-      sender_staff_code: "online",
-      note: null,
-      invoice_receiver_data: {
-        register: "UZ96021105",
-        name: "Ganzul",
-        email: "test@gmail.com",
-        phone: "88614450",
-      },
-      lines: [
-        {
-          tax_product_code: "6401",
-          line_description: " Order No1311 200.00 .",
-          line_quantity: "1.00",
-          line_unit_price: "200.00",
-          note: "-.",
-          discounts: [
-            {
-              discount_code: "NONE",
-              description: " discounts",
-              amount: 10,
-              note: " discounts",
-            },
-          ],
-          surcharges: [
-            {
-              surcharge_code: "NONE",
-              description: "Хүргэлтийн зардал",
-              amount: 10,
-              note: " Хүргэлт",
-            },
-          ],
-          taxes: [
-            {
-              tax_code: "VAT",
-              description: "НӨАТ",
-              amount: 20,
-              note: " НӨАТ",
-            },
-          ],
-        },
-      ],
-    });
-
+npm i @togtokh.dev/qpay
 ```
+
+## Features
+
+- Authentication with access-token retrieval and token refresh (`auth.TOKEN`, `auth.REFRESH`).
+- Invoice management — full and simplified invoice creation, lookup, and cancellation (`invoice.CREATE`, `invoice.CREATE_SIMPLE`, `invoice.INFO`, `invoice.CANCEL`).
+- Payment operations — single-payment lookup, per-invoice payment checks, cancellation, and refunds (`payment.INFO`, `payment.CHECK`, `payment.CANCEL`, `payment.REFUND`).
+- eBarimt receipt issuance for citizens and companies (`ebarimt.CREATE`).
+- Shared `config` holding the host, invoice code, credentials, and the live auth session.
+- Fully typed with TypeScript declarations; every method returns a uniform `Promise<{ success, message, data? }>` result.
+
+## Quick start
+
+```ts
+import QPAY from "@togtokh.dev/qpay";
+
+async function main() {
+  // 1. Authenticate — stores the access token on the shared config.
+  await QPAY.auth.TOKEN({
+    username: "YOUR_USERNAME",
+    password: "YOUR_PASSWORD",
+    invoice_code: "YOUR_INVOICE_CODE",
+  });
+
+  // (optional) refresh the token later using the stored refresh token
+  // await QPAY.auth.REFRESH();
+
+  // 2. Create an invoice.
+  const invoice = await QPAY.invoice.CREATE_SIMPLE({
+    sender_invoice_no: "1234567",
+    invoice_receiver_code: "83",
+    invoice_description: "Order No1311 200.00",
+    amount: 200,
+    callback_url: "https://example.com/payments?payment_id=1234567",
+  });
+
+  if (!invoice.success) {
+    throw new Error(invoice.message);
+  }
+
+  const invoiceId = invoice.data!.invoice_id;
+  console.log("QR text:", invoice.data!.qr_text);
+  console.log("Short URL:", invoice.data!.qPay_shortUrl);
+
+  // 3. Check whether the invoice has been paid.
+  const payment = await QPAY.payment.CHECK(invoiceId);
+  console.log("Paid amount:", payment.data?.paid_amount);
+}
+
+main().catch(console.error);
+```
+
+## API
+
+Every method is asynchronous and resolves to a `Response` object (see [Response](#response)).
+
+### `auth`
+
+| Method | Signature |
+| --- | --- |
+| `TOKEN` | `TOKEN(body: { username: string; password: string; invoice_code: string }): Promise<Response>` |
+| `REFRESH` | `REFRESH(): Promise<Response>` |
+
+- `TOKEN` — exchanges credentials for an access token and stores the session on `config.authInfo`.
+- `REFRESH` — renews the access token using the stored refresh token (call `TOKEN` first).
+
+### `invoice`
+
+| Method | Signature |
+| --- | --- |
+| `CREATE` | `CREATE(body): Promise<Response<InvoiceData>>` |
+| `CREATE_SIMPLE` | `CREATE_SIMPLE(body): Promise<Response<InvoiceData>>` |
+| `INFO` | `INFO(invoice_id: string): Promise<Response<InvoiceInfo>>` |
+| `CANCEL` | `CANCEL(invoice_id: string): Promise<Response>` |
+
+`CREATE` body fields:
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `invoice_code` | `string` | optional |
+| `sender_invoice_no` | `string` | required |
+| `sender_branch_code` | `string` | required |
+| `invoice_receiver_code` | `string` | required |
+| `invoice_receiver_data` | `{ register: string; name: string; email: string; phone: string \| number }` | required |
+| `invoice_description` | `string` | required |
+| `enable_expiry` | `boolean` | optional |
+| `invoice_due_date` | `string` | optional |
+| `allow_partial` | `boolean` | required |
+| `minimum_amount` | `string` | required |
+| `allow_exceed` | `boolean` | required |
+| `maximum_amount` | `string` | required |
+| `note` | `string` | required |
+| `amount` | `number` | required |
+| `callback_url` | `string` | required |
+| `sender_staff_code` | `string` | required |
+| `tax_customer_code` | `string` | optional |
+| `lines` | `Line[]` (one entry) with `tax_product_code`, `line_description`, `line_quantity`, `line_unit_price`, `note`, and optional `discounts` / `surcharges` / `taxes` arrays | optional |
+
+`CREATE_SIMPLE` body fields:
+
+| Field | Type | Required |
+| --- | --- | --- |
+| `invoice_code` | `string` | optional |
+| `sender_invoice_no` | `string` | required |
+| `invoice_receiver_code` | `string` | required |
+| `invoice_description` | `string` | required |
+| `amount` | `number` | required |
+| `callback_url` | `string` | required |
+
+Both `CREATE` and `CREATE_SIMPLE` resolve with `data` of shape `{ invoice_id, qr_text, qr_image, qPay_shortUrl, urls: { name, description, logo, link }[] }`.
+
+`INFO(invoice_id)` resolves with the full invoice record (status, amounts, lines, transactions, and any `payments`). `CANCEL(invoice_id)` cancels the invoice.
+
+### `payment`
+
+| Method | Signature |
+| --- | --- |
+| `INFO` | `INFO(payment_id: string): Promise<Response<PaymentInfo>>` |
+| `CHECK` | `CHECK(invoice_id: string): Promise<Response<PaymentList>>` |
+| `CANCEL` | `CANCEL(invoice_id: string): Promise<Response<PaymentList>>` |
+| `REFUND` | `REFUND(invoice_id: string): Promise<Response<PaymentList>>` |
+
+- `INFO(payment_id)` — details of a single payment (`payment_id`, `payment_status`, `payment_amount`, `payment_currency`, `p2p_transactions`, etc.).
+- `CHECK(invoice_id)` — lists payments for an invoice: `{ count, paid_amount, rows: Payment[] }`.
+- `CANCEL(invoice_id)` — cancels payments for an invoice; resolves with the same `{ count, paid_amount, rows }` shape.
+- `REFUND(invoice_id)` — refunds payments for an invoice; resolves with the same `{ count, paid_amount, rows }` shape.
+
+### `ebarimt`
+
+| Method | Signature |
+| --- | --- |
+| `CREATE` | `CREATE(body: { payment_id: string; ebarimt_receiver_type: "CITIZEN" \| "COMPAYNE"; ebarimt_receiver?: string }): Promise<Response<EbarimtData>>` |
+
+Issues an eBarimt receipt for a completed payment. `data` contains the full eBarimt record, including `ebarimt_qr_data`, `ebarimt_lottery`, `amount`, `vat_amount`, and `barimt_status`.
+
+### `config`
+
+A shared, mutable configuration object (named export):
+
+```ts
+import { config } from "@togtokh.dev/qpay";
+```
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `host` | `string` | Base URL of the QPay API. |
+| `invoice_code` | `string` | Default invoice code used for requests. |
+| `auth` | `{ username: string; password: string }` | Credentials set by `auth.TOKEN`. |
+| `authInfo` | `authInfoT` | Live auth session: `token_type`, `access_token`, `refresh_token`, `expires_in`, `refresh_expires_in`, `scope`, `not-before-policy`, `session_state`. |
+
+> The package also re-exports `invoice`, `payment`, and `ebarimt` as named exports, equivalent to the properties on the default export.
+
+## Response
+
+Every method resolves to a uniform result and never rejects on an API error — check `success` instead:
+
+```ts
+type Response<T = any> = {
+  success: boolean;   // true when the API call succeeded
+  message: string;    // human-readable status or error message
+  data?: T;           // present on success; shape depends on the method
+};
+```
+
+The `message` field carries the QPay status or error key (see the tables below); `data` is populated only when `success` is `true`.
 
 ## BANK CODE
 
@@ -127,11 +214,11 @@
 | :---------: | :----------------: | :-------------------------------------------: |
 |     200     |      SUCCESS       |                   Амжилттай                   |
 |     400     |  VALIDATION_ERROR  |    Параметр буруу илгээсэн үед гарах алдаа    |
-|     401     | UNAUTHORIZED_ERROR |      Нэвтрэлгүй дуудсан үед гарах алдаа       |
+|     401     | UNAUTHORIZED_ERROR |       Нэвтрэлгүй дуудсан үед гарах алдаа       |
 |     403     |  FORBIDDEN_ERROR   |      Хандах эрх хүрээгүй үед гарах алдаа      |
 |     409     |    UNIQUE_ERROR    | Бүртгэлийн мэдээлэл давхацсан үед гарах алдаа |
 |     422     |  NOT_FOUND_ERROR   |       Мэдээлэл олдоогүй үед гарах алдаа       |
-|     500     |   INTERNAL_ERROR   |            Системийн дотоод алдаа             |
+|     500     |   INTERNAL_ERROR   |             Системийн дотоод алдаа             |
 
 ## ERROR MESSAGE
 
@@ -189,3 +276,7 @@
 |       TAX_PRODUCT_CODE_REQUIRED        |            Татварын бүтээгдэхүүний код шаардлагатай             |             Tax product code is required!              |
 |        TRANSACTION_NOT_APPROVED        |              Гүйлгээний мөр зөвшөөрөгдөөгүй байна               |           Transaction line is not approved!            |
 |          TRANSACTION_REQUIRED          |                Гүйлгээний мөр шаардлагатай байна                |             Transaction line is required!              |
+
+## License
+
+ISC

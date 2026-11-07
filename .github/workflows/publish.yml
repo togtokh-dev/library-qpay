@@ -1,0 +1,45 @@
+name: Publish to npm
+
+# Publishes @togtokh.dev/qpay to npm using npm Trusted Publishing (OIDC).
+# No NPM_TOKEN secret is needed — npm verifies this workflow via GitHub OIDC.
+# Matching npm Trusted Publisher settings:
+#   Publisher:            GitHub Actions
+#   Organization or user: togtokh-dev
+#   Repository:           library-qpay
+#   Workflow filename:    publish.yml
+#   Environment name:     (leave blank)
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write # REQUIRED for npm OIDC trusted publishing
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://registry.npmjs.org
+
+      # Trusted publishing (OIDC) needs npm >= 11.5.1
+      - name: Upgrade npm
+        run: npm install -g npm@latest
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+      - name: Publish
+        run: npm publish --provenance --access public
